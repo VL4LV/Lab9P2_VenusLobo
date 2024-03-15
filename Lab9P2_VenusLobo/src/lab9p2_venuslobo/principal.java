@@ -4,6 +4,13 @@
  */
 package lab9p2_venuslobo;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileNameExtensionFilter;
+
 /**
  *
  * @author ADMIN
@@ -15,11 +22,15 @@ public class principal extends javax.swing.JFrame {
      */
     public principal() {
         initComponents();
-        
+
         //hilo de la hora 
         hiloHora h = new hiloHora(texto_hora);
         Thread proceso1 = new Thread(h);
         proceso1.start();
+
+        //hilo de la barrita
+        HT = new barrita(this.barrita);
+
     }
 
     /**
@@ -41,9 +52,9 @@ public class principal extends javax.swing.JFrame {
         boton_subir = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        jProgressBar1 = new javax.swing.JProgressBar();
+        barrita = new javax.swing.JProgressBar();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        area_texto = new javax.swing.JTextArea();
         boton_guardar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -98,6 +109,11 @@ public class principal extends javax.swing.JFrame {
         );
 
         boton_subir.setText("Subir archivo");
+        boton_subir.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                boton_subirMouseClicked(evt);
+            }
+        });
         boton_subir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 boton_subirActionPerformed(evt);
@@ -112,9 +128,9 @@ public class principal extends javax.swing.JFrame {
         jLabel5.setForeground(new java.awt.Color(0, 0, 0));
         jLabel5.setText("ARCHIVO:");
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jScrollPane1.setViewportView(jTextArea1);
+        area_texto.setColumns(20);
+        area_texto.setRows(5);
+        jScrollPane1.setViewportView(area_texto);
 
         boton_guardar.setText("Guardar");
 
@@ -132,7 +148,7 @@ public class principal extends javax.swing.JFrame {
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(boton_subir)
                                     .addComponent(jLabel3)
-                                    .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 244, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addComponent(barrita, javax.swing.GroupLayout.PREFERRED_SIZE, 244, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGap(220, 220, 220)
                                 .addComponent(jLabel5)))
@@ -156,7 +172,7 @@ public class principal extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jLabel3)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(barrita, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(23, 23, 23)
                 .addComponent(jLabel5)
                 .addGap(18, 18, 18)
@@ -185,6 +201,47 @@ public class principal extends javax.swing.JFrame {
     private void boton_subirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_boton_subirActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_boton_subirActionPerformed
+
+    private void boton_subirMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_boton_subirMouseClicked
+        // TODO add your handling code here:
+        // Crear un JFileChooser
+        JFileChooser cho = new JFileChooser();
+
+        // Aplicar un filtro para que solo se muestren archivos de texto (.txt)
+        FileNameExtensionFilter filtro = new FileNameExtensionFilter("Archivo de texto", "txt");
+        cho.setFileFilter(filtro);
+
+        // Mostrar el dialogo para abrir archivos
+        int resultado = cho.showOpenDialog(this);
+
+        // Verificar si el usuario seleciono un archivo y presiono el boton abrir
+        if (resultado == JFileChooser.APPROVE_OPTION) {
+            // Obtener el archivo seleccionado
+            File archivoSeleccionado = cho.getSelectedFile();
+
+            try {
+                // Crear un lector de archivos
+                FileReader fr = new FileReader(archivoSeleccionado);
+                BufferedReader br = new BufferedReader(fr);
+
+                StringBuilder contenido = new StringBuilder();
+                String linea;
+                while ((linea = br.readLine()) != null) {
+                    contenido.append(linea).append("\n"); 
+                }
+
+                // Cerrar el lector de archivos
+                br.close();
+
+                // Establecer el contenido en el JTextArea
+                area_texto.setText(contenido.toString());
+
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Error al leer el archivo: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+
+    }//GEN-LAST:event_boton_subirMouseClicked
 
     /**
      * @param args the command line arguments
@@ -221,7 +278,12 @@ public class principal extends javax.swing.JFrame {
         });
     }
 
+    barrita HT;
+
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextArea area_texto;
+    private javax.swing.JProgressBar barrita;
     private javax.swing.JButton boton_guardar;
     private javax.swing.JButton boton_subir;
     private javax.swing.JLabel jLabel1;
@@ -231,9 +293,7 @@ public class principal extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JProgressBar jProgressBar1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextArea jTextArea1;
     private javax.swing.JLabel texto_fecha;
     private javax.swing.JLabel texto_hora;
     // End of variables declaration//GEN-END:variables
