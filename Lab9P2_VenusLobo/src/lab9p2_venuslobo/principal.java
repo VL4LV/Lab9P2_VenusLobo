@@ -5,8 +5,11 @@
 package lab9p2_venuslobo;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -22,15 +25,17 @@ public class principal extends javax.swing.JFrame {
      */
     public principal() {
         initComponents();
+         cargarArchivoSeleccionado();
 
         //hilo de la hora 
         hiloHora h = new hiloHora(texto_hora);
         Thread proceso1 = new Thread(h);
         proceso1.start();
 
-        //hilo de la barrita
-        HT = new barrita(this.barrita);
-
+        //hilo de la fecha
+        hilofecha y = new hilofecha(texto_fecha);
+        Thread proceso11 = new Thread(y);
+        proceso11.start();
     }
 
     /**
@@ -42,16 +47,16 @@ public class principal extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
-        jPanel2 = new javax.swing.JPanel();
+        panel_rojo = new javax.swing.JPanel();
+        panel_blanco = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         texto_fecha = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         texto_hora = new javax.swing.JLabel();
         boton_subir = new javax.swing.JButton();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
+        label_subir = new javax.swing.JLabel();
+        label_archivo = new javax.swing.JLabel();
         barrita = new javax.swing.JProgressBar();
         jScrollPane1 = new javax.swing.JScrollPane();
         area_texto = new javax.swing.JTextArea();
@@ -59,9 +64,9 @@ public class principal extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jPanel1.setBackground(new java.awt.Color(255, 51, 51));
+        panel_rojo.setBackground(new java.awt.Color(255, 51, 51));
 
-        jPanel2.setBackground(new java.awt.Color(255, 255, 255));
+        panel_blanco.setBackground(new java.awt.Color(255, 255, 255));
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(0, 0, 0));
@@ -77,24 +82,24 @@ public class principal extends javax.swing.JFrame {
 
         texto_hora.setText("jLabel3");
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
+        javax.swing.GroupLayout panel_blancoLayout = new javax.swing.GroupLayout(panel_blanco);
+        panel_blanco.setLayout(panel_blancoLayout);
+        panel_blancoLayout.setHorizontalGroup(
+            panel_blancoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panel_blancoLayout.createSequentialGroup()
                 .addGap(43, 43, 43)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(panel_blancoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(texto_fecha)
                     .addComponent(jLabel2)
                     .addComponent(jLabel1)
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addGroup(panel_blancoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                         .addComponent(texto_hora, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap(44, Short.MAX_VALUE))
         );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
+        panel_blancoLayout.setVerticalGroup(
+            panel_blancoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panel_blancoLayout.createSequentialGroup()
                 .addGap(75, 75, 75)
                 .addComponent(jLabel1)
                 .addGap(18, 18, 18)
@@ -120,61 +125,66 @@ public class principal extends javax.swing.JFrame {
             }
         });
 
-        jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jLabel3.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel3.setText("Subiendo archivo:");
+        label_subir.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        label_subir.setForeground(new java.awt.Color(0, 0, 0));
+        label_subir.setText("Subiendo archivo:");
 
-        jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jLabel5.setForeground(new java.awt.Color(0, 0, 0));
-        jLabel5.setText("ARCHIVO:");
+        label_archivo.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        label_archivo.setForeground(new java.awt.Color(0, 0, 0));
+        label_archivo.setText("ARCHIVO:");
 
         area_texto.setColumns(20);
         area_texto.setRows(5);
         jScrollPane1.setViewportView(area_texto);
 
         boton_guardar.setText("Guardar");
+        boton_guardar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                boton_guardarMouseClicked(evt);
+            }
+        });
 
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
+        javax.swing.GroupLayout panel_rojoLayout = new javax.swing.GroupLayout(panel_rojo);
+        panel_rojo.setLayout(panel_rojoLayout);
+        panel_rojoLayout.setHorizontalGroup(
+            panel_rojoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panel_rojoLayout.createSequentialGroup()
+                .addComponent(panel_blanco, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(panel_rojoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panel_rojoLayout.createSequentialGroup()
+                        .addGroup(panel_rojoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(panel_rojoLayout.createSequentialGroup()
                                 .addGap(37, 37, 37)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(panel_rojoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(boton_subir)
-                                    .addComponent(jLabel3)
+                                    .addComponent(label_subir)
                                     .addComponent(barrita, javax.swing.GroupLayout.PREFERRED_SIZE, 244, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addGroup(panel_rojoLayout.createSequentialGroup()
                                 .addGap(220, 220, 220)
-                                .addComponent(jLabel5)))
+                                .addComponent(label_archivo)))
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
+                    .addGroup(panel_rojoLayout.createSequentialGroup()
+                        .addGroup(panel_rojoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(panel_rojoLayout.createSequentialGroup()
                                 .addGap(106, 106, 106)
                                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 322, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addGroup(panel_rojoLayout.createSequentialGroup()
                                 .addGap(239, 239, 239)
                                 .addComponent(boton_guardar)))
                         .addContainerGap(207, Short.MAX_VALUE))))
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(jPanel1Layout.createSequentialGroup()
+        panel_rojoLayout.setVerticalGroup(
+            panel_rojoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(panel_blanco, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(panel_rojoLayout.createSequentialGroup()
                 .addGap(51, 51, 51)
                 .addComponent(boton_subir)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel3)
+                .addComponent(label_subir)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(barrita, javax.swing.GroupLayout.PREFERRED_SIZE, 18, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(23, 23, 23)
-                .addComponent(jLabel5)
+                .addComponent(label_archivo)
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
@@ -187,12 +197,12 @@ public class principal extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(panel_rojo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(panel_rojo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -204,44 +214,54 @@ public class principal extends javax.swing.JFrame {
 
     private void boton_subirMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_boton_subirMouseClicked
         // TODO add your handling code here:
-        // Crear un JFileChooser
-        JFileChooser cho = new JFileChooser();
 
-        // Aplicar un filtro para que solo se muestren archivos de texto (.txt)
+        JFileChooser cho = new JFileChooser();
         FileNameExtensionFilter filtro = new FileNameExtensionFilter("Archivo de texto", "txt");
         cho.setFileFilter(filtro);
-
-        // Mostrar el dialogo para abrir archivos
         int resultado = cho.showOpenDialog(this);
-
-        // Verificar si el usuario seleciono un archivo y presiono el boton abrir
         if (resultado == JFileChooser.APPROVE_OPTION) {
-            // Obtener el archivo seleccionado
-            File archivoSeleccionado = cho.getSelectedFile();
+            archivoSeleccionado = cho.getSelectedFile(); // Guardar referencia al archivo seleccionado
+            barrita HT = new barrita(barrita, archivoSeleccionado, area_texto, this);
+            HT.start();
+        }
+    }//GEN-LAST:event_boton_subirMouseClicked
 
+    // Método para cargar el contenido del archivo seleccionado al JTextArea
+    private void cargarArchivoSeleccionado() {
+        if (archivoSeleccionado != null) {
             try {
-                // Crear un lector de archivos
                 FileReader fr = new FileReader(archivoSeleccionado);
                 BufferedReader br = new BufferedReader(fr);
-
                 StringBuilder contenido = new StringBuilder();
                 String linea;
                 while ((linea = br.readLine()) != null) {
-                    contenido.append(linea).append("\n"); 
+                    contenido.append(linea).append("\n");
                 }
-
-                // Cerrar el lector de archivos
                 br.close();
-
-                // Establecer el contenido en el JTextArea
                 area_texto.setText(contenido.toString());
-
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(this, "Error al leer el archivo: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(this, "Error al cargar el archivo seleccionado: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
+    }
 
-    }//GEN-LAST:event_boton_subirMouseClicked
+    private void boton_guardarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_boton_guardarMouseClicked
+        // TODO add your handling code here:
+        if (archivoSeleccionado != null) { // Verificar si se ha seleccionado un archivo antes
+            String texto = area_texto.getText();
+            try {
+                FileWriter fw = new FileWriter(archivoSeleccionado);
+                BufferedWriter bw = new BufferedWriter(fw);
+                bw.write(texto);
+                bw.close();
+                JOptionPane.showMessageDialog(this, "Cambios guardados correctamente.", "Guardado", JOptionPane.INFORMATION_MESSAGE);
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(this, "Error al guardar los cambios: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "No se ha seleccionado ningún archivo para guardar los cambios.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_boton_guardarMouseClicked
 
     /**
      * @param args the command line arguments
@@ -278,9 +298,7 @@ public class principal extends javax.swing.JFrame {
         });
     }
 
-    barrita HT;
-
-
+    private File archivoSeleccionado;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextArea area_texto;
     private javax.swing.JProgressBar barrita;
@@ -288,12 +306,12 @@ public class principal extends javax.swing.JFrame {
     private javax.swing.JButton boton_subir;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel label_archivo;
+    private javax.swing.JLabel label_subir;
+    private javax.swing.JPanel panel_blanco;
+    private javax.swing.JPanel panel_rojo;
     private javax.swing.JLabel texto_fecha;
     private javax.swing.JLabel texto_hora;
     // End of variables declaration//GEN-END:variables
